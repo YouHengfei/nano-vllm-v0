@@ -47,6 +47,8 @@ class RotaryEmbedding(nn.Module):
         key = apply_rotary_emb(key, cos, sin)
         return query, key
 
+# @lru_cache 是 Python 性能优化的“降维打击”工具。只要你的函数是确定性的（输入相同，输出必相同），
+# 加上这行代码往往能让运行速度提升数个数量级。
 
 @lru_cache(1)
 def get_rope(

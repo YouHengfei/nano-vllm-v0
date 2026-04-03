@@ -4,7 +4,7 @@ import numpy as np
 
 from nanovllm.engine.sequence import Sequence
 
-
+# Block 类是显存的最小单位。
 class Block:
 
     def __init__(self, block_id):
@@ -62,6 +62,8 @@ class BlockManager:
         cache_miss = False
         for i in range(seq.num_blocks):
             token_ids = seq.block(i)
+            # 增量哈希：compute_hash 使用了当前块的 token_ids 加上上一个块的 hash。
+            # 这意味着哈希值不仅代表当前块，还代表了到此为止的整个前缀路径。
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
             block_id = self.hash_to_block_id.get(h, -1)
             if block_id == -1 or self.blocks[block_id].token_ids != token_ids:
